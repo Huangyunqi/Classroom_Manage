@@ -2,13 +2,23 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Classroom_Manage_V0.2</title>
+		<title>Classroom_Manage_V0.4</title>
 	</head>
 	<body>
 		<form action = "login.php" method = "post">
 			<table>
 				<tr>
-					<td colspan="2">Classroom_Manage_V0.3</td>
+					<td colspan="2">Classroom_Manage_V0.4</td>
+				</tr>
+				<tr>
+					<td colspan="2">Identity:
+						<select name = "user_type">
+							<option value = "Student">Student</option>
+							<option value = "Professor"/>Professor</option>
+							<option value = "Manager"/>Manager</option>
+							<option value = "External"/>External</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<td>account:</td>
@@ -19,7 +29,7 @@
 					<td><input type = "password" name = "password" id = "password" size = "20"/></td>
 				</tr>
 				<tr>
-					<td><input type = "submit"></td>
+					<td><input type = "submit" value = "Login"></td>
 				</tr>
 			</table>
 		</form>
