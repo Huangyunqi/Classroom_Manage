@@ -1,0 +1,90 @@
+PS:到时代码最好先讨论一下命名规则，用github做版本控制和共享？
+
+--带*号的为主键--
+
+Student:
+  *student_id        int            auto_increment
+  password           varchar(20)    default 000
+  name               varchar(30)  
+  grade              enum(1 2 3 4)            
+  major              varchar(100)
+  email              varchar(60)
+
+Professor：
+  *professor_id      int            auto_increment
+  password           varchar(20)    default 000 
+  name               varchar(30)    
+  email              varchar(60)
+
+Classroom:  前缀r代表room，为了不和course的c冲突
+  *r_id              char(4)     
+  size               enum(big  medium big  medium small  small)
+  facility           bit(1)
+
+Sparetime:          
+  *r_id              char(4) reference to Classroom.r_id
+  *week              int
+  -- the 7 bitmap --           
+  mon                int
+  tue                int
+  wed                int
+  thu		      int
+  fri                int
+  sat                int
+  sun                int
+
+Course:
+  *c_id              int            auto_increment
+  c_name             varchar(30)  
+  professor_id       int		reference to Professor.professor_id
+  r_id               char(4)		reference to Classroom.r_id
+  week_begin         int
+  week_end           int
+  day       	      int
+  course_begin       int
+  course_end         int
+
+Manager:
+  *m_id              int            auto_increment
+  password           varchar(20)    default 000
+  name               varchar(30)
+
+Application:
+  *a_id              int            auto_increment
+  user_type          enum(s, p, o)
+  user_id            int            可以null
+  size               enum(...) 
+  week               int
+  day                enum(the 7 days in a week.)
+  course_begin       int
+  course_end         int
+  reason             varchar(100)
+  verfity            enum(-1:not pass 0:pending 1:pass)
+
+Student_course:（这里感觉还是给s_c弄一个自己的id当主键比较好，当时尹俊文也这么说）
+  *sc_id	     int   auto_increment
+  student_id        int    reference to Student.student_id
+  course_id         int    reference to Course.course_id
+
+To be continued...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
