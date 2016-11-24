@@ -16,68 +16,59 @@
 	//the 4 kinds of user bellow
 	if($user_type == "External")
 	{
-		echo "<script>
-				location.href='External_menu.php';
-			</script>";
-	}
-	
-	else if($user_type == "Student")
-	{
-		$query = "SELECT * FROM $user_type WHERE student_id = '$account' AND password = '$password'";
-		$result = $conn->query($query);
-		if($result->num_rows == 0)
-		{
-			echo "<script>
-					alert('password error');
-					location.href='home.html';
-				</script>";
-		}
-		$_SESSION["user_id"] = $account;
-		$_SESSION["user_type"] = $user_type;
-		$url = $user_type . '_menu.php';
-		echo "<script>
-				location.href='$url';
-			</script>";
+		print<<<EOT
+			<script>
+				location.href='External_menu.html';
+			</script>
+EOT;
 	}
 
-	else if($user_type == "Professor")
+	else
 	{
-		$query = "SELECT * FROM $user_type WHERE professor_id = '$account' AND password = '$password'";
-		$result = $conn->query($query);
-		if($result->num_rows == 0)
+		switch ($user_type) 
 		{
-			echo "<script>
-					alert('password error');
-					location.href='home.html';
-				</script>";
-		}
-		$_SESSION["user_id"] = $account;
-		$_SESSION["user_type"] = $user_type;
-		$url = $user_type . '_menu.php';
-		echo "<script>
-				location.href='$url';
-			</script>";
-	}
+			case 'Student':
+				$user_type_id = 'student_id';
+				break;
 
-	else if($user_type == "Manager")
-	{
-		$query = "SELECT * FROM $user_type WHERE manager_id = '$account' AND password = '$password'";
+			case 'Professor':
+				$user_type_id = 'professor_id';
+				break;
+
+			case 'Manager':
+				$user_type_id = 'manager_id';
+				break;
+			
+			default:
+				print<<<EOT
+					<script>
+						alert('user_type error');
+						location.href='home.html';
+					</script>
+EOT;
+				break;
+		}
+
+		$query = "SELECT * FROM $user_type WHERE $user_type_id = '$account' AND password = '$password'";
 		$result = $conn->query($query);
 		if($result->num_rows == 0)
 		{
-			echo "<script>
-					alert('password error');
+			print<<<EOT
+				<script>
+					alert('Password Error');
 					location.href='home.html';
-				</script>";
+				</script>
+EOT;
 		}
 		$_SESSION["user_id"] = $account;
 		$_SESSION["user_type"] = $user_type;
-		$url = $user_type . '_menu.php';
-		echo "<script>
+		$url = $user_type . '_menu.html';
+		print<<<EOT
+			<script>
 				location.href='$url';
-			</script>";
+			</script>
+EOT;
 	}
 
 	$conn->close();
 ?>
-
