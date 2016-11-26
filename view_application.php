@@ -18,27 +18,8 @@
 	//get user type and id
 	$user_type = $_SESSION["user_type"];
 	$id = $_SESSION["user_id"];
-	switch ($user_type) 
-	{
-		case 'Student':
-			$user_type_id = 'student_id';
-			$user_type_abbr = 's';
-			break;
-
-		case 'Professor':
-			$user_type_id = 'professor_id';
-			$user_type_abbr = 'p';
-			break;
-		
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
-	}
+	$user_type_id = lcfirst($user_type) . '_id';
+	$user_type_abbr = $user_type_id[0];
 
 	//get data from database
 	$query = "SELECT * FROM Application WHERE user_type = '$user_type_abbr' AND user_id = '$id'";
@@ -118,29 +99,11 @@ EOT;
 EOT;
 
 	//jump back when user click button "Go Back"
-	switch ($user_type) 
-	{
-		case 'Student':
-			print<<<EOT
-				<a href = "Student_menu.html"><input type = "button" value = "Go Back"></a>
+	$url = $user_type . '_menu.html';
+	print<<<EOT
+		<a href = "$url"><input type = "button" value = "Go Back"></a>
 EOT;
-			break;
 
-		case 'Professor':
-			print<<<EOT
-				<a href = "Professor_menu.html"><input type = "button" value = "Go Back"></a>
-EOT;
-			break;
-		
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
-	}
 	
 	$conn->close();
 ?>

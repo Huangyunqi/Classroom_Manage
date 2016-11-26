@@ -17,30 +17,7 @@
 	//get data from session
 	$user_type = $_SESSION["user_type"];
 	$id = $_SESSION["user_id"];
-
-	switch ($user_type) 
-	{
-		case 'Student':
-			$user_type_id = 'student_id';
-			break;
-
-		case 'Professor':
-			$user_type_id = 'professor_id';
-			break;
-
-		case 'Manager':
-			$user_type_id = 'manager_id';
-			break;
-		
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
-	}
+	$user_type_id = lcfirst($user_type) . '_id';
 
 	//get data from database
 	$query = "SELECT * FROM $user_type WHERE $user_type_id = '$id'";
@@ -57,89 +34,30 @@ EOT;
 	$ver_password = $_POST["ver_password"];
 
 	//reject changing password if old_password were not correct
+
 	if($old_password != $password)
 	{
-		switch ($user_type) 
-		{
-			case 'Student':
-				print<<<EOT
-					<script>
-						alert('Wrong Password');
-						location.href = 'Student_change_password.html';	
-					</script>
+		$url = $user_type . '_change_password.html';
+		print<<<EOT
+		<script>
+			alert('Wrong Password');
+			location.href = '$url';	
+		</script>
 EOT;
-				break;
-
-			case 'Professor':
-				print<<<EOT
-					<script>
-						alert('Wrong Password');
-						location.href = 'Professor_change_password.html';	
-					</script>
-EOT;
-				break;
-
-			case 'Manager':
-				print<<<EOT
-					<script>
-						alert('Wrong Password');
-						location.href = 'Manager_change_password.html';	
-					</script>
-EOT;
-				break;
-			
-			default:
-				print<<<EOT
-					<script>
-						alert('user_type error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
 	}
+
 	//reject changing password if ver_password were not new_password
 	else if($new_password != $ver_password)
 	{
-		switch ($user_type) 
-		{
-			case 'Student':
-				print<<<EOT
-					<script>
-						alert('Password Verification Error');
-						location.href = 'Student_change_password.html';	
-					</script>
+		$url = $user_type . '_change_password.html';
+		print<<<EOT
+		<script>
+			alert('Password Verification Error');
+			location.href = '$url';	
+		</script>
 EOT;
-				break;
-
-			case 'Professor':
-				print<<<EOT
-					<script>
-						alert('Password Verification Error');
-						location.href = 'Professor_change_password.html';	
-					</script>
-EOT;
-				break;
-
-			case 'Manager':
-				print<<<EOT
-					<script>
-						alert('Password Verification Error');
-						location.href = 'Manager_change_password.html';	
-					</script>
-EOT;
-				break;
-			
-			default:
-				print<<<EOT
-					<script>
-						alert('user_type error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
 	}
+
 	//else password can be changed	
 	else
 	{
@@ -150,45 +68,15 @@ EOT;
 			die('Could not connect: ' . $conn->connect_error);
 		}
 
-		switch ($user_type) 
-		{
-			case 'Student':
-				print<<<EOT
-					<script>
-						alert('Password Sucessfully Changed');
-						location.href = 'Student_menu.html';	
-					</script>
+		$url = $user_type . '_menu.html';
+		print<<<EOT
+		<script>
+			alert('Password Sucessfully Changed');
+			location.href = '$url';	
+		</script>
 EOT;
-				break;
-
-			case 'Professor':
-				print<<<EOT
-					<script>
-						alert('Password Sucessfully Changed');
-						location.href = 'Professor_menu.html';	
-					</script>
-EOT;
-				break;
-
-			case 'Manager':
-				print<<<EOT
-					<script>
-						alert('Password Sucessfully Changed');
-						location.href = 'Manager_menu.html';	
-					</script>
-EOT;
-				break;
-			
-			default:
-				print<<<EOT
-					<script>
-						alert('user_type error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
 	}
 	
+	//close database
 	$conn->close();
 ?>

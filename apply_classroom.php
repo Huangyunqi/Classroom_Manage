@@ -17,27 +17,8 @@
 	//get user type and id 
 	$user_type = $_SESSION["user_type"];
 	$id = $_SESSION["user_id"];
-	switch ($user_type) 
-	{
-		case 'Student':
-			$user_type_id = 'student_id';
-			$user_type_abbr = 's';
-			break;
-
-		case 'Professor':
-			$user_type_id = 'professor_id';
-			$user_type_abbr = 'p';
-			break;
-		
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
-	}
+	$user_type_id = lcfirst($user_type) . '_id';
+	$user_type_abbr = $user_type_id[0];
 
 	//get data posted from Student or Professor_apply_classroom.html
 	$week = $_POST["week"];
@@ -50,75 +31,36 @@ EOT;
 	//Reject if course_end < course_begin
 	if($course_end < $course_begin)
 	{
-		switch ($user_type) 
-		{
-			case 'Student':
+		$url = $user_type . '_apply_classroom.html';
+		
 				print<<<EOT
 					<script>
 						alert('Course End must be greater than Course Begin');
-						location.href = 'Student_apply_classroom.html';	
+						location.href = '$url';	
 					</script>
 EOT;
-				break;
-
-			case 'Professor':
-				print<<<EOT
-					<script>
-						alert('Course End must be greater than Course Begin');
-						location.href = 'Professor_apply_classroom.html';	
-					</script>
-EOT;
-				break;
-
-			default:
-				print<<<EOT
-					<script>
-						alert('user_type error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
 	}
 
 	//insert an application into database 
-	$query = "INSERT INTO Application (user_type, user_id, size, week, day, course_begin, course_end, reason) VALUES ('$user_type_abbr', '$id', '$size', '$week', '$day', '$course_begin', '$course_end', '$reason')";
-	$result = $conn->query($query);
-	if(!$result)
+	else
 	{
-		die('Connect Error');
-	}
+		$query = "INSERT INTO Application (user_type, user_id, size, week, day, course_begin, course_end, reason) VALUES ('$user_type_abbr', '$id', '$size', '$week', '$day', '$course_begin', '$course_end', '$reason')";
+		$result = $conn->query($query);
+		if(!$result)
+		{
+			die('Connect Error');
+		}
 
-	//response
-	switch ($user_type) 
-	{
-		case 'Student':
-			print<<<EOT
-				<script>
-					alert('Your application was submitted sucessfully.');
-					location.href = 'Student_menu.html';	
-				</script>
+		//response
+		$url = $user_type . '_menu.html';
+		print<<<EOT
+			<script>
+				alert('Your application was submitted sucessfully.');
+				location.href = '$url';	
+			</script>
 EOT;
-			break;
-	
-		case 'Professor':
-			print<<<EOT
-				<script>
-					alert('Your application was submitted sucessfully.');
-					location.href = 'Professor_menu.html';	
-				</script>
-EOT;
-			break;
-
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
 	}
+			
 	
 	$conn->close();
 ?>
