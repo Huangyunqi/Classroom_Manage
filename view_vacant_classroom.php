@@ -18,25 +18,7 @@
 	//get user type and id
 	$user_type = $_SESSION["user_type"];
 	$id = $_SESSION["user_id"];
-	switch ($user_type) 
-	{
-		case 'Student':
-			$user_type_id = 'student_id';
-			break;
-
-		case 'Professor':
-			$user_type_id = 'professor_id';
-			break;
-		
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
-	}
+	$user_type_id = lcfirst($user_type) . '_id';
 
 	//get data posted from Student or professor view_vacant_classroom.html
 	$week = $_POST["week"];
@@ -47,40 +29,19 @@ EOT;
 	//ERROR if course_begin > course_end
 	if($course_end < $course_begin)
 	{
-		switch ($user_type) 
-		{
-			case 'Student':
-				print<<<EOT
-					<script>
-						alert('Course End must be greater than Course Begin');
-						location.href = 'Student_view_vacant_classroom.html';	
-					</script>
+		$url = $user_type . '_view_vacant_classroom.html';
+		print<<<EOT
+			<script>
+				alert('Course End must be greater than Course Begin');
+				location.href = 'Student_view_vacant_classroom.html';	
+			</script>
 EOT;
-				break;
-
-			case 'Professor':
-				print<<<EOT
-					<script>
-						alert('Course End must be greater than Course Begin');
-						location.href = 'Professor_view_vacant_classroom.html';	
-					</script>
-EOT;
-				break;
-
-			default:
-				print<<<EOT
-					<script>
-						alert('user_type error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
 	}
 
 	//get data from database
 	$day_column = 'Sparetime.' . $day;
-	$query = "SELECT Classroom.classroom_id, Classroom.size, Classroom.facility, Sparetime.week, $day_column FROM Classroom, Sparetime WHERE Classroom.classroom_id = Sparetime.classroom_id AND Sparetime.week = '$week'";
+	$query = "SELECT Classroom.classroom_id, Classroom.size, Classroom.facility, Sparetime.week, $day_column FROM Classroom, Sparetime 
+	    WHERE Classroom.classroom_id = Sparetime.classroom_id AND Sparetime.week = '$week'";
 	$result = $conn->query($query);
 	if(!$result)
 	{
@@ -100,56 +61,13 @@ EOT;
 	{
 		$result->data_seek($i);
 		$row = $result->fetch_assoc();
-		switch ($day) 
-		{
-			case 'mon':
-				$vacant_number = $row['mon'];
-				break;
-
-			case 'tue':
-				$vacant_number = $row['tue'];
-				break;
-
-			case 'wed':
-				$vacant_number = $row['wed'];
-				break;
-
-			case 'thu':
-				$vacant_number = $row['thu'];
-				break;
-
-			case 'fri':
-				$vacant_number = $row['fri'];
-				break;
-
-			case 'sat':
-				$vacant_number = $row['sat'];
-				break;
-
-			case 'sun':
-				$vacant_number = $row['sun'];
-				break;
-			
-			default:
-				print<<<EOT
-					<script>
-						alert('day error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
+		$vacant_number = $row[$day];
 		
 		//handle the schedule
 		$vacant = decbin($vacant_number);
-		if(strlen($vacant) < 15)
+		while(strlen($vacant) < 15)
 		{
-			$temp = $vacant;
-			for($j = 0 ; $j < 15 - strlen($vacant) ; $j++)
-			{
-				$temp = '0' . $temp;
-			}
-			$vacant = $temp;
+			$vacant = '0' . $vacant;
 		}
 
 		$time_string = substr($vacant, $course_begin - 1, $course_end - $course_begin + 1);
@@ -166,7 +84,7 @@ EOT;
 		else
 			$state = 'BAD';
 
-		//print a line 
+		//print a row
 		print<<<EOT
 			<tr>
 				<td align="center">$classroom_id</td>
@@ -179,30 +97,12 @@ EOT;
 		</table>
 EOT;
 
+	$url = $user_type . '_view_vacant_classroom.html';
 	//jump back when user click button "Go Back"
-	switch ($user_type) 
-	{
-		case 'Student':
-			print<<<EOT
-				<a href = "Student_view_vacant_classroom.html"><input type = "button" value = "Go Back"></a>
+	print<<<EOT
+		<a href = "Student_view_vacant_classroom.html"><input type = "button" value = "Go Back"></a>
 EOT;
-			break;
 
-		case 'Professor':
-			print<<<EOT
-				<a href = "Professor_view_vacant_classroom.html"><input type = "button" value = "Go Back"></a>
-EOT;
-			break;
-		
-		default:
-			print<<<EOT
-				<script>
-					alert('user_type error');
-					location.href='home.html';
-				</script>
-EOT;
-			break;
-	}
 	
 	$conn->close();
 ?>

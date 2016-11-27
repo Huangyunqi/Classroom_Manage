@@ -59,56 +59,13 @@ EOT;
 		$row = $result->fetch_assoc();
 
 		//Use switch because $row['$day'] is invalid
-		switch ($day) 
-		{
-			case 'mon':
-				$vacant_number = $row['mon'];
-				break;
-
-			case 'tue':
-				$vacant_number = $row['tue'];
-				break;
-
-			case 'wed':
-				$vacant_number = $row['wed'];
-				break;
-
-			case 'thu':
-				$vacant_number = $row['thu'];
-				break;
-
-			case 'fri':
-				$vacant_number = $row['fri'];
-				break;
-
-			case 'sat':
-				$vacant_number = $row['sat'];
-				break;
-
-			case 'sun':
-				$vacant_number = $row['sun'];
-				break;
-			
-			default:
-				print<<<EOT
-					<script>
-						alert('day error');
-						location.href='home.html';
-					</script>
-EOT;
-				break;
-		}
+		$vacant_number = $row[$day];
 		
 		//get schedule for selected week and day
 		$vacant = decbin($vacant_number);
-		if(strlen($vacant) < 15)
+		while(strlen($vacant) < 15)
 		{
-			$temp = $vacant;
-			for($j = 0 ; $j < 15 - strlen($vacant) ; $j++)
-			{
-				$temp = '0' . $temp;
-			}
-			$vacant = $temp;
+			$vacant = '0' . $vacant;
 		}
 
 		$time_string = substr($vacant, $course_begin - 1, $course_end - $course_begin + 1);
@@ -195,7 +152,7 @@ EOT;
 	}
 	print<<<EOT
 		</table>
-		<a href="Manager_handle_application.html"><input type="button" value="Go Back"></a>	
+		<a href="Manager_handle_application.php"><input type="button" value="Go Back"></a>	
 	</body>
 EOT;
 	
